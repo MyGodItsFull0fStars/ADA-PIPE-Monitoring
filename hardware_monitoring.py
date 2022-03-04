@@ -15,9 +15,17 @@ class HardwareMonitoring():
     def get_num_total_cpu_cores():
         return psutil.cpu_count(logical=True)
 
+    @staticmethod
+    def get_virtual_memory(as_dict: bool = False):
+        vm = psutil.virtual_memory()
+        return vm._asdict() if as_dict else vm
+
 
 
 if __name__ == '__main__':
-    print(HardwareMonitoring.get_cpu_frequency())
-    print(HardwareMonitoring.get_num_physical_cpu_cores())
-    print(HardwareMonitoring.get_num_total_cpu_cores())
+    pass
+    # before = HardwareMonitoring.get_virtual_memory(True)
+    # test_list = []
+    # for idx in range(1000000):
+    #     test_list.append(idx)
+    # after = HardwareMonitoring.get_virtual_memory(True)
