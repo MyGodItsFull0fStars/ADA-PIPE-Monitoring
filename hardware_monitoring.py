@@ -22,10 +22,13 @@ class HardwareMonitoring():
 
 
 
-if __name__ == '__main__':
-    pass
-    # before = HardwareMonitoring.get_virtual_memory(True)
-    # test_list = []
-    # for idx in range(1000000):
-    #     test_list.append(idx)
-    # after = HardwareMonitoring.get_virtual_memory(True)
+# if __name__ == '__main__':
+    
+#     print(HardwareMonitoring.get_cpu_frequency())
+#     before = HardwareMonitoring.get_virtual_memory(True)
+#     print(before)
+#     test_list = []
+#     for idx in range(10000):
+#         test_list.append(idx)
+#     after = HardwareMonitoring.get_virtual_memory(True)
+#     print(after)
