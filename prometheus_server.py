@@ -2,31 +2,32 @@ from flask import Response, Flask, request
 import prometheus_client
 from prometheus_client.core import CollectorRegistry
 from prometheus_client import Summary, Counter, Histogram, Gauge
-import time
-import random
+from prometheus_client import make_wsgi_app
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+
+from data_collector import DataCollector, DataCollectorResponses
+
+from utils import request_metrics_wrap
 
 app = Flask(__name__)
 
-_INF = float('inf')
+data_collector: DataCollector = DataCollector()
 
-graphs = {}
-graphs['c'] = Counter('python_request_operations_total', 'The total number of processed requests')
-graphs['h'] = Histogram('python_request_duration_seconds', 'Histogram for the duration in seconds.', buckets=(1, 2, 5, 6, 10, _INF))
+
+app.wsgi_app = DispatcherMiddleware(
+    app.wsgi_app, {'/metrics': make_wsgi_app()})
 
 @app.route('/')
+@request_metrics_wrap
 def root():
-    start = time.time()
-    graphs['c'].inc()
+    return DataCollectorResponses.get_total_number_of_requests()
+    # return f'Request Counter: {data_collector.get_total_request_counter()}'
 
-    time.sleep(0.5 * random.random())
-    end = time.time()
-    graphs['h'].observe(end - start)
-    return f'Time to compute: {end - start}'
 
-@app.route('/metrics')
+@app.route('/device_status')
+@request_metrics_wrap
 def metrics():
-    response = [prometheus_client.generate_latest(v) for v in graphs.values()]
-    return Response(response, mimetype='text/plain')
+    return DataCollectorResponses.get_device_status_response()
 
 
 if __name__ == '__main__':
