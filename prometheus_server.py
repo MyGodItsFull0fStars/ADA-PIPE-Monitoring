@@ -21,13 +21,17 @@ app.wsgi_app = DispatcherMiddleware(
 @request_metrics_wrap
 def root():
     return DataCollectorResponses.get_total_number_of_requests()
-    # return f'Request Counter: {data_collector.get_total_request_counter()}'
 
 
 @app.route('/device_status')
 @request_metrics_wrap
 def metrics():
     return DataCollectorResponses.get_device_status_response()
+
+@app.route('/hardware_status')
+@request_metrics_wrap
+def get_hardware():
+    return 'Super Powerful Hardware'
 
 
 if __name__ == '__main__':
