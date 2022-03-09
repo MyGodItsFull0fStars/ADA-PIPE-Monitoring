@@ -94,7 +94,12 @@ class HardwareMonitoring():
         Returns:
             dict: dictionary containing the temperature information of the device.
         """
+        if not psutil.LINUX:
+            return f'Function only implemented for Linux distributions'
+        # Return sensor temperature for Linux System
         return psutil.sensors_temperatures()
+
+
 
     @staticmethod
     def get_system_status() -> dict:
@@ -116,5 +121,7 @@ if __name__ == '__main__':
     print(HardwareMonitoring.get_system_status())
     # print(HardwareMonitoring.get_cpu_load_average())
     # print(HardwareMonitoring.get_cpu_load_average(True))
+    print(HardwareMonitoring.get_sensors_temperatures())
+    
 
     
