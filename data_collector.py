@@ -26,7 +26,7 @@ _graphs[TOTAL_REQUEST_COUNTER] = Counter(
 _graphs[REQUEST_TIME_HIST] = Histogram(
     'request_duration', 'Histogram for the duration in seconds', buckets=(1, 2, 5, 6, 10, _INF))
 
-_graphs[VIRTUAL_MEMORY] = Sum
+# _graphs[VIRTUAL_MEMORY] = Sum
 
 
 
