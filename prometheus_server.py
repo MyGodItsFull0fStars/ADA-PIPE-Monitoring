@@ -35,6 +35,11 @@ def root():
 def metrics():
     return DataCollectorResponses.get_device_status_response()
 
+@app.route('/hardware_status')
+@request_metrics_wrap
+def get_hardware():
+    return 'Super Powerful Hardware'
+
 
 if __name__ == '__main__':
     
