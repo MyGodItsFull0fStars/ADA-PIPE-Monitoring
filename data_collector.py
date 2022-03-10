@@ -1,6 +1,4 @@
-
 import prometheus_client
-from prometheus_client.core import CollectorRegistry
 from prometheus_client import Summary, Counter, Histogram, Gauge, Info
 from flask import Response
 
@@ -22,7 +20,7 @@ _graphs: dict = {}
 _graphs[TOTAL_REQUEST_COUNTER] = Counter(
     'request_operations_total', 'The total number of processed requests')
 _graphs[REQUEST_TIME_HIST] = Histogram(
-    'request_duration', 'Histogram for the duration in seconds', buckets=(1, 2, 5, 6, 10, _INF))
+    'request_duration', 'Histogram for the duration in seconds', buckets=(0.1, 0.2, 0.5, 0.6, 1, _INF))
 
 
 
@@ -40,6 +38,8 @@ class DataCollector():
     @staticmethod
     def add_response_time(response_time):
         _graphs[REQUEST_TIME_HIST].observe(response_time)
+
+    
 
 
 class DataCollectorResponses():

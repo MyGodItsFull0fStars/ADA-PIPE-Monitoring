@@ -3,6 +3,8 @@ import psutil
 from psutil import cpu_times
 from psutil import cpu_percent
 
+from flask_restful import Resource
+
 
 class HardwareMonitoring():
 

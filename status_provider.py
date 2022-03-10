@@ -1,7 +1,8 @@
 from flask import Response, Flask, request
+from flask_restful import Api
+
 import prometheus_client
-from prometheus_client.core import CollectorRegistry
-from prometheus_client import Summary, Counter, Histogram, Gauge
+from prometheus_client import ProcessCollector
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
@@ -11,7 +12,6 @@ from utils import request_metrics_wrap
 
 app = Flask(__name__)
 
-data_collector: DataCollector = DataCollector()
 
 
 app.wsgi_app = DispatcherMiddleware(
@@ -32,6 +32,11 @@ def metrics():
 @request_metrics_wrap
 def get_hardware():
     return 'Super Powerful Hardware'
+
+@app.route('/test')
+def test():
+    response = prometheus_client.generate_latest(ProcessCollector())
+    return Response(response, mimetype='text/plain')
 
 
 if __name__ == '__main__':
