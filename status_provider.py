@@ -1,17 +1,28 @@
-from flask import Response, Flask, request
+from flask import Response, Flask
 from flask_restful import Api
 
 import prometheus_client
 from prometheus_client import ProcessCollector
+from flask import Flask
+from waitress import serve
+from flask_cors import CORS
+
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
+
+import socket
+
 
 from data_collector import DataCollector, DataCollectorResponses
 
 from utils import request_metrics_wrap
 
-app = Flask(__name__)
+DEBUG_MODE: bool = False
+HOST_NUMBER: str = '0.0.0.0'
+PORT_NUMBER: int = 6969
 
+app = Flask(__name__)
+cors = CORS(app, resources={f'/*': {'origins': '*'}})
 
 
 app.wsgi_app = DispatcherMiddleware(
@@ -40,4 +51,14 @@ def test():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    
+    if DEBUG_MODE is True:
+        # debug mode
+        app.run(host=HOST_NUMBER, port=PORT_NUMBER, debug=True)
+
+    else:
+        # production mode
+        host_name = socket.gethostname()
+        IP_address = socket.gethostbyname(host_name)
+        print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
+        serve(app, port=PORT_NUMBER)
