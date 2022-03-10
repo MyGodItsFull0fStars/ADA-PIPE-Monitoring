@@ -51,5 +51,5 @@ if __name__ == '__main__':
         # production mode
         host_name = socket.gethostname()
         IP_address = socket.gethostbyname(host_name)
-        print(f'Running on http://{IP_address}/{PORT_NUMBER}/ (Press CTRL+C to quit)')
+        print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
         serve(app, port=PORT_NUMBER)
