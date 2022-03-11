@@ -5,8 +5,6 @@ import psutil
 from psutil import cpu_times
 from psutil import cpu_percent
 
-from flask_restful import Resource
-
 
 class HardwareMonitoring():
 
@@ -78,7 +76,8 @@ class HardwareMonitoring():
         Returns:
             List[float] | Dict[str, float]: Returns a list of floats representing the load average over the last 1, 5 and 15 minutes of the system running.
         """
-        load_average = [x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
+        load_average = [
+            x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
         if as_dict is True:
             temp_dict = {}
             for key, value in zip(['cpu_load_avg_1_min', 'cpu_load_avg_5_min', 'cpu_load_avg_15_min'], load_average):
@@ -101,8 +100,6 @@ class HardwareMonitoring():
         # Return sensor temperature for Linux System
         return psutil.sensors_temperatures()
 
-
-
     @staticmethod
     def get_system_status() -> dict:
         system_status: dict = {
@@ -124,6 +121,3 @@ if __name__ == '__main__':
     # print(HardwareMonitoring.get_cpu_load_average())
     # print(HardwareMonitoring.get_cpu_load_average(True))
     print(HardwareMonitoring.get_sensors_temperatures())
-    
-
-    
