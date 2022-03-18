@@ -5,6 +5,7 @@ import psutil
 from psutil import cpu_times
 from psutil import cpu_percent
 
+from constants import *
 
 class HardwareMonitoring():
 
@@ -70,7 +71,7 @@ class HardwareMonitoring():
         return system_info
 
     @staticmethod
-    def get_cpu_load_average(as_dict: bool = False) -> Any:
+    def get_cpu_load_average(as_dict: bool = True) -> Any:
         """Get the system load average in percent.
 
         Returns:
@@ -80,7 +81,7 @@ class HardwareMonitoring():
             x / psutil.cpu_count() * 100 for x in psutil.getloadavg()]
         if as_dict is True:
             temp_dict = {}
-            for key, value in zip(['cpu_load_avg_1_min', 'cpu_load_avg_5_min', 'cpu_load_avg_15_min'], load_average):
+            for key, value in zip([CPU_LOAD_1_MIN, CPU_LOAD_5_MIN, CPU_LOAD_15_MIN], load_average):
                 temp_dict[key] = value
 
             load_average = temp_dict
@@ -105,7 +106,7 @@ class HardwareMonitoring():
         system_status: dict = {
 
             'cpu_load_average': HardwareMonitoring.get_cpu_load_average(as_dict=True),
-            'virtual_memory': HardwareMonitoring.get_virtual_memory(True),
+            'virtual_memory': HardwareMonitoring.get_virtual_memory(as_dict=True),
             # 'disk_partitions': HardwareMonitoring.get_disk_partitions() # Not sure if needed
         }
 

@@ -12,8 +12,8 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 import socket
 
+from data_collector import DataCollector, DataCollectorResponses, StatusUpdateHandler
 
-from data_collector import DataCollector, DataCollectorResponses
 
 from utils import request_metrics_wrap
 
@@ -51,6 +51,9 @@ def test():
 
 
 if __name__ == '__main__':
+
+    sh = StatusUpdateHandler()
+    sh.start_background_thread()
     
     if DEBUG_MODE is True:
         # debug mode
@@ -62,3 +65,5 @@ if __name__ == '__main__':
         IP_address = socket.gethostbyname(host_name)
         print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
         serve(app, port=PORT_NUMBER)
+
+
