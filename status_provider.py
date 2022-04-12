@@ -17,9 +17,9 @@ from data_collector import DataCollector, DataCollectorResponses, StatusUpdateHa
 
 from utils import request_metrics_wrap
 
-DEBUG_MODE: bool = False
+DEBUG_MODE: bool = True
 HOST_NUMBER: str = '0.0.0.0'
-PORT_NUMBER: int = 6969
+PORT_NUMBER: int = 5500
 
 app = Flask(__name__)
 cors = CORS(app, resources={f'/*': {'origins': '*'}})
@@ -61,9 +61,9 @@ if __name__ == '__main__':
 
     else:
         # production mode
-        host_name = socket.gethostname()
-        IP_address = socket.gethostbyname(host_name)
-        print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
+        # host_name = socket.gethostname()
+        # IP_address = socket.gethostbyname(host_name)
+        # print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
         serve(app, port=PORT_NUMBER)
 
 
