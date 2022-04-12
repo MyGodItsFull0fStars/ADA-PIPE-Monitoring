@@ -1,3 +1,4 @@
+from matplotlib.style import available
 import prometheus_client
 import threading
 from prometheus_client import Summary, Counter, Histogram, Gauge, Info, CollectorRegistry
@@ -8,57 +9,40 @@ import time, datetime
 
 from hardware_monitoring import HardwareMonitoring
 
-from constants import *
-
-
-_INF = float('inf')
-
-_metric_data: dict = {}
-_metric_data[TOTAL_REQUEST_COUNTER] = Counter(
-    'request_operations_total', 'The total number of processed requests')
-_metric_data[REQUEST_TIME_HIST] = Histogram(
-    'request_duration', 'Histogram for the duration in seconds', buckets=(0.1, 0.2, 0.5, 0.6, 1, _INF))
-
-# _graphs[VIRTUAL_MEMORY] = Sum
-
-_metric_data[CPU_LOAD_1_MIN] = Gauge(
-    CPU_LOAD_1_MIN, 'The CPU load of the last minute')
-_metric_data[CPU_LOAD_5_MIN] = Gauge(
-    CPU_LOAD_5_MIN, 'The CPU load of the last 5 minutes')
-_metric_data[CPU_LOAD_15_MIN] = Gauge(
-    CPU_LOAD_15_MIN, 'The CPU load of the last 15 minutes')
-
-        
+from metric_data import *       
 
 class DataCollector():
 
     @staticmethod
     def update_hardware_metrics():
-        DataCollector.add_current_virtual_memory()
-        DataCollector.add_current_cpu_load()
+        DataCollector.update_current_virtual_memory()
+        DataCollector.update_current_cpu_load()
 
     @staticmethod
     def increment_total_request_counter():
-        _metric_data[TOTAL_REQUEST_COUNTER].inc()
+        metric_data[TOTAL_REQUEST_COUNTER].inc()
 
     @staticmethod
     def get_total_request_counter() -> int:
-        return _metric_data[TOTAL_REQUEST_COUNTER]
+        return metric_data[TOTAL_REQUEST_COUNTER]
 
     @staticmethod
     def add_response_time(response_time):
-        _metric_data[REQUEST_TIME_HIST].observe(response_time)
+        metric_data[REQUEST_TIME_HIST].observe(response_time)
 
     @staticmethod
-    def add_current_virtual_memory():
-        pass
+    def update_current_virtual_memory():
+        vm = HardwareMonitoring.get_virtual_memory()
+        metric_data[VIRTUAL_MEMORY_AVAILABLE].set(vm['available'])
+        metric_data[VIRTUAL_MEMORY_USED].set(vm['used'])
+        metric_data[VIRTUAL_MEMORY_FREE].set(vm['free'])
 
     @staticmethod
-    def add_current_cpu_load():
+    def update_current_cpu_load():
         current_cpu_load = HardwareMonitoring.get_cpu_load_average(as_dict=True)
-        _metric_data[CPU_LOAD_1_MIN].set(current_cpu_load[CPU_LOAD_1_MIN])
-        _metric_data[CPU_LOAD_5_MIN].set(current_cpu_load[CPU_LOAD_5_MIN])
-        _metric_data[CPU_LOAD_15_MIN].set(current_cpu_load[CPU_LOAD_15_MIN])
+        metric_data[CPU_LOAD_1_MIN].set(current_cpu_load[CPU_LOAD_1_MIN])
+        metric_data[CPU_LOAD_5_MIN].set(current_cpu_load[CPU_LOAD_5_MIN])
+        metric_data[CPU_LOAD_15_MIN].set(current_cpu_load[CPU_LOAD_15_MIN])
 
 
 class DataCollectorResponses():
@@ -66,7 +50,7 @@ class DataCollectorResponses():
     @staticmethod
     def get_device_status_response() -> Response:
         response = [prometheus_client.generate_latest(
-            v) for v in _metric_data.values()]
+            v) for v in metric_data.values()]
         return Response(response, mimetype='text/plain')
 
     @staticmethod
@@ -86,4 +70,4 @@ class StatusUpdateHandler():
     @staticmethod
     def start_background_thread():
         threading.Timer(0, StatusUpdateHandler.update_status).start()
-        print(HardwareMonitoring.get_cpu_load_average(as_dict=True))
+        # print(HardwareMonitoring.get_cpu_load_average(as_dict=True))
