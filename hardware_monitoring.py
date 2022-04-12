@@ -1,11 +1,11 @@
-from os import stat
 from typing import Any, List
-from pandas import value_counts
 import psutil
 from psutil import cpu_times
 from psutil import cpu_percent
+from psutil._common import bytes2human
 
-from constants import *
+from metric_data import *
+
 
 class HardwareMonitoring():
 
@@ -27,12 +27,12 @@ class HardwareMonitoring():
         return cpu_time._asdict() if as_dict else cpu_time
 
     @staticmethod
-    def get_cpu_percent(per_cpu: bool = False, interval: float = None):
+    def get_cpu_percent(per_cpu: bool = False, interval: float = 1):
         """Get the CPU Usage of the device
 
         Args:
             `per_cpu` (bool, optional): If set to `True`, get the usage per cpu core, otherwise get an average cpu usage. Defaults to `False`.
-            `interval` (float, optional): Tracks the cpu usage in a given interval. ATTENTION: If a value is provided, this method is blocking other calls. Defaults to None.
+            `interval` (float, optional): Tracks the cpu usage in a given interval. ATTENTION: If a value is provided, this method is blocking other calls (this is why this should be used with threading). Defaults to 1 second.
 
         Returns:
             `float` | `List[float]`: Returns a float if the value `per_cpu` is `False` otherwise will return a list of `float` values.
@@ -40,13 +40,20 @@ class HardwareMonitoring():
         return psutil.cpu_percent(interval=interval, percpu=per_cpu)
 
     @staticmethod
-    def get_cpu_stats(as_dict: bool = False):
+    def get_cpu_stats(as_dict: bool = True):
         return psutil.cpu_stats()._asdict() if as_dict else psutil.cpu_stats()
 
     @staticmethod
-    def get_virtual_memory(as_dict: bool = False):
+    def get_virtual_memory(as_dict: bool = True, human_readable: bool = False):
         vm = psutil.virtual_memory()
-        return vm._asdict() if as_dict else vm
+        if as_dict:
+            vm = vm._asdict()
+        if as_dict and human_readable:
+            percent = vm['percent']
+            vm = {key: bytes2human(value)
+                  for key, value in vm.items() if key != 'percent'}
+            vm['percent'] = percent
+        return vm
 
     @staticmethod
     def get_disk_partitions():
@@ -63,9 +70,9 @@ class HardwareMonitoring():
             dict: Python Dictionary containing the system info
         """
         system_info: dict = {
-            'cpu_frequency': int(HardwareMonitoring.get_cpu_frequency().current),
             'num_physical_cpu_cores': HardwareMonitoring.get_num_physical_cpu_cores(),
-            'num_total_cpu_cores': HardwareMonitoring.get_num_total_cpu_cores()
+            'num_total_cpu_cores': HardwareMonitoring.get_num_total_cpu_cores(),
+            'disk_partitions': HardwareMonitoring.get_disk_partitions()
         }
 
         return system_info
@@ -115,10 +122,16 @@ class HardwareMonitoring():
 
 if __name__ == '__main__':
 
-    # print(HardwareMonitoring.get_cpu_percent(per_cpu=True))
+    print(HardwareMonitoring.get_cpu_percent(per_cpu=True))
     # print(HardwareMonitoring.get_disk_partitions())
     # print(HardwareMonitoring.get_system_info())
-    print(HardwareMonitoring.get_system_status())
-    # print(HardwareMonitoring.get_cpu_load_average())
+    # print(HardwareMonitoring.get_system_status())
+
+    print(HardwareMonitoring.get_cpu_stats())
+    print(HardwareMonitoring.get_cpu_load_average())
     # print(HardwareMonitoring.get_cpu_load_average(True))
-    print(HardwareMonitoring.get_sensors_temperatures())
+    # print(HardwareMonitoring.get_sensors_temperatures())
+    # print(HardwareMonitoring.get_virtual_memory())
+    vm = HardwareMonitoring.get_virtual_memory(True, True)
+
+    print(vm)
