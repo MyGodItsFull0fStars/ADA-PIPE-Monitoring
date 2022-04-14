@@ -14,7 +14,7 @@ class MonitoredDevice():
             raise Exception
 
     def get_device_id(self) -> str:
-        return hash(self.get_string_representation())
+        return hash(f'ip_address: {self.ip_address}, port_number: {self.port_number}')
 
     def get_device_name(self) -> str:
         return self.device_name
