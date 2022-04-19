@@ -1,5 +1,6 @@
 from typing import Dict
-from flask import Response
+
+from network_constants import *
 
 
 class MonitoredDevice():
@@ -7,9 +8,9 @@ class MonitoredDevice():
     def __init__(self, json_file) -> None:
         print(json_file)
         if self._is_valid(json_file):
-            self.device_name: str = json_file['device_name']
-            self.ip_address: str = json_file['ip_address']
-            self.port_number: int = json_file['port_number']
+            self.device_name: str = json_file[DEVICE_NAME_JSON_KEY]
+            self.ip_address: str = json_file[IP_ADDRESS_JSON_KEY]
+            self.port_number: int = json_file[PORT_NUMBER_JSON_KEY]
         else:
             raise Exception
 
@@ -28,21 +29,27 @@ class MonitoredDevice():
     def _is_valid(self, json_file) -> bool:
         def error_msg(key_name):
             print(f'{key_name} key not found in json file')
-        if not 'device_name' in json_file:
-            error_msg('device_name')
+        if not DEVICE_NAME_JSON_KEY in json_file:
+            error_msg(DEVICE_NAME_JSON_KEY)
+            return False
+        if not IP_ADDRESS_JSON_KEY in json_file:
+            error_msg(IP_ADDRESS_JSON_KEY)
+            return False
+        if not PORT_NUMBER_JSON_KEY in json_file:
+            error_msg(PORT_NUMBER_JSON_KEY)
             return False
 
         return True
 
     def get_string_representation(self) -> str:
-        return '{' + f'device_name: {self.device_name}, ip_address: {self.ip_address}, port_number: {self.port_number}' + '}'
+        return '{' + f'{DEVICE_NAME_JSON_KEY}: {self.device_name}, {IP_ADDRESS_JSON_KEY}: {self.ip_address}, {PORT_NUMBER_JSON_KEY}: {self.port_number}' + '}'
 
     def get_as_dict(self) -> dict:
         return {
             'device_name': self.device_name,
             'ip_address': self.ip_address,
             'port_number': self.port_number
-            }
+        }
 
     def __str__(self) -> str:
         return f'device_name: {self.device_name}'
