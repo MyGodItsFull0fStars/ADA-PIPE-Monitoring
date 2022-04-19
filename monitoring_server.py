@@ -56,6 +56,6 @@ class Monitoring():
 
 if __name__ == '__main__':
 
-    app.run(port=5056, debug=True)
+    app.run(port=9100, debug=True)
 
 
