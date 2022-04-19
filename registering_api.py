@@ -76,5 +76,5 @@ class RegisteringREST(Resource):
 
         except Exception:
             print('Could not unregister the device')
-            
-            return 'NO!', 417
+            error_msg = 'NO!' if device.get_device_id() in monitored_devices else 'Device not registered'
+            return error_msg, 417

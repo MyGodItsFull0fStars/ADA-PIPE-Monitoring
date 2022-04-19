@@ -14,17 +14,23 @@ class RegisteringHandler:
 
     def register(self):
         master_node_register_url: str = self._network_handler.get_master_node_url('register')
-        payload = self._network_handler.get_registering_payload('aa')
+        payload = self._network_handler.get_registering_payload()
 
         response = requests.post(url=master_node_register_url, json=payload)
+        print(response.status_code)
         
         
 
     def unregister(self):
-        pass
+        master_node_register_url: str = self._network_handler.get_master_node_url('register')
+        payload = self._network_handler.get_registering_payload()
+
+        response = requests.delete(url=master_node_register_url, json=payload)
+        print(response.status_code, response.text)
 
 
 if __name__ == '__main__':
     rh = RegisteringHandler()
 
-    rh.register()
+    # rh.register()
+    rh.unregister()
