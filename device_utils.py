@@ -1,34 +1,30 @@
 from typing import Dict
+from dataclasses import dataclass
 
 from network_constants import *
+import hash_utils
 
-
+@dataclass
 class MonitoredDevice():
 
-    def __init__(self, json_file) -> None:
-        print(json_file)
-        if self._is_valid(json_file):
-            self.device_name: str = json_file[DEVICE_NAME_JSON_KEY]
-            self.ip_address: str = json_file[IP_ADDRESS_JSON_KEY]
-            self.port_number: int = json_file[PORT_NUMBER_JSON_KEY]
-        else:
-            raise Exception
+    device_name: str
+    ip_address: str
+    port_number: int
+    hardware: dict = None
+    _hash_exclude_: tuple = ('device_name', 'hardware')
 
-    def get_device_id(self) -> str:
-        return hash(f'ip_address: {self.ip_address}, port_number: {self.port_number}')
+    def get_id(self) -> str:
+        """Returns the ID in form of a (stable) hash value
 
-    def get_device_name(self) -> str:
-        return self.device_name
+        Returns:
+            str: a hash value that represents the ID of the MonitoredDevice
+        """
+        return hash_utils.get_hash(hash_utils._json_default(self))
 
-    def get_ip_address(self) -> int:
-        return self.ip_address
-
-    def get_port_number(self) -> int:
-        return self.port_number
-
-    def _is_valid(self, json_file) -> bool:
+    def _is_valid(self, json_file, debug: bool = False) -> bool:
         def error_msg(key_name):
-            print(f'{key_name} key not found in json file')
+            if debug:
+                print(f'{key_name} key not found in json file')
         if not DEVICE_NAME_JSON_KEY in json_file:
             error_msg(DEVICE_NAME_JSON_KEY)
             return False
@@ -40,19 +36,6 @@ class MonitoredDevice():
             return False
 
         return True
-
-    def get_string_representation(self) -> str:
-        return '{' + f'{DEVICE_NAME_JSON_KEY}: {self.device_name}, {IP_ADDRESS_JSON_KEY}: {self.ip_address}, {PORT_NUMBER_JSON_KEY}: {self.port_number}' + '}'
-
-    def get_as_dict(self) -> dict:
-        return {
-            'device_name': self.device_name,
-            'ip_address': self.ip_address,
-            'port_number': self.port_number
-        }
-
-    def __str__(self) -> str:
-        return f'device_name: {self.device_name}'
 
 
 monitored_devices: Dict[int, MonitoredDevice] = {}

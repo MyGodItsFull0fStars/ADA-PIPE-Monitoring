@@ -3,6 +3,7 @@ from time import perf_counter
 
 from data_collector import DataCollector
 
+
 def request_metrics_wrap(func):
     @wraps(func)
     def wrap(*args, **kw):
