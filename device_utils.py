@@ -42,4 +42,4 @@ monitored_devices: Dict[int, MonitoredDevice] = {}
 
 
 def get_devices_as_json() -> dict:
-    return {key: value.get_as_dict() for key, value in monitored_devices.items()}
+    return {key: hash_utils._json_default(value, exclude_fields=False) for key, value in monitored_devices.items()}

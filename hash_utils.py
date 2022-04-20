@@ -61,9 +61,9 @@ def _json_dumps(data: object) -> str:
     )
 
 
-def _json_default(data: object) -> Any:
+def _json_default(data: object, exclude_fields: bool = True) -> Any:
     try:
-        return _dataclass_dict(data)
+        return _dataclass_dict(data, exclude_fields)
     except TypeError:
         pass
     if isinstance(data, datetime.datetime):
@@ -71,7 +71,7 @@ def _json_default(data: object) -> Any:
     raise TypeError(f"Object of type {type(data).__name__} is not JSON serializable")
 
 
-def _dataclass_dict(data: object) -> Dict[str, Any]:
+def _dataclass_dict(data: object, exclude_fields: bool = True) -> Dict[str, Any]:
     # we could have used dataclasses.asdict()
     # with a dict_factory that drops empty values,
     # but asdict() is recursive and we need to intercept and check
@@ -88,7 +88,10 @@ def _dataclass_dict(data: object) -> Dict[str, Any]:
 
     rv = {}
     for field in fields:
-        if field.name in exclude:
+        if field.name in exclude and exclude_fields:
+            continue
+
+        if field.name == _EXCLUDE:
             continue
 
         value = getattr(data, field.name)

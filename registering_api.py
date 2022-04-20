@@ -2,6 +2,12 @@ from flask_restful import Resource
 from flask import jsonify, request, abort, Response
 
 from device_utils import MonitoredDevice, monitored_devices, get_devices_as_json
+from network_constants import (
+    DEVICE_NAME_JSON_KEY,
+    IP_ADDRESS_JSON_KEY,
+    PORT_NUMBER_JSON_KEY
+)
+
 
 class RegisteringREST(Resource):
     """REST API Service that is used to register devices for the monitoring service
@@ -24,8 +30,12 @@ class RegisteringREST(Resource):
         received_json = request.json
 
         try:
-            device = MonitoredDevice(received_json)
-            device_id = device.get_device_id()
+            device = MonitoredDevice(
+                received_json[DEVICE_NAME_JSON_KEY],
+                received_json[IP_ADDRESS_JSON_KEY],
+                received_json[PORT_NUMBER_JSON_KEY]
+            )
+            device_id = device.get_id()
             if device_id in monitored_devices.keys():
                 return 'Device already registered, for updating use REST PUT method', 405
 
@@ -35,9 +45,8 @@ class RegisteringREST(Resource):
 
         except Exception:
             print('Could not register the device')
-            
-            return 'NO!', 417
 
+            return 'NO!', 417
 
     def put(self):
         if not request.json:
@@ -56,7 +65,7 @@ class RegisteringREST(Resource):
 
         except Exception:
             print('Could not update the device')
-            
+
             return 'NO!', 417
 
     def delete(self):
@@ -76,5 +85,6 @@ class RegisteringREST(Resource):
 
         except Exception:
             print('Could not unregister the device')
-            error_msg = 'NO!' if device.get_device_id() in monitored_devices else 'Device not registered'
+            error_msg = 'NO!' if device.get_device_id(
+            ) in monitored_devices else 'Device not registered'
             return error_msg, 417
