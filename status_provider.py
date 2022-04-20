@@ -1,5 +1,4 @@
 from flask import Response, Flask
-from flask_restful import Api
 
 import prometheus_client
 from prometheus_client import ProcessCollector
@@ -10,9 +9,7 @@ from flask_cors import CORS
 from prometheus_client import make_wsgi_app
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
-import socket
-
-from data_collector import DataCollector, DataCollectorResponses, StatusUpdateHandler
+from data_collector import DataCollectorResponses, StatusUpdateHandler
 
 
 from utils import request_metrics_wrap
