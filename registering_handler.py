@@ -1,4 +1,3 @@
-from urllib import response
 from network_utils import NetworkHandler
 import requests
 
@@ -32,5 +31,5 @@ class RegisteringHandler:
 if __name__ == '__main__':
     rh = RegisteringHandler()
 
-    # rh.register()
-    rh.unregister()
+    rh.register()
+    # rh.unregister()

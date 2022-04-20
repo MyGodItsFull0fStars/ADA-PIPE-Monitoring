@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import jsonify, request, abort, Response
+from flask import jsonify, request, abort
 
 from device_utils import MonitoredDevice, monitored_devices, get_devices_as_json
 from network_constants import (
