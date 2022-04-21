@@ -21,7 +21,8 @@ class MonitoredDevice():
         """
         return hash_utils.get_hash(hash_utils._json_default(self))
 
-    def _is_valid(self, json_file, debug: bool = False) -> bool:
+    @staticmethod
+    def _is_valid(json_file, debug: bool = False) -> bool:
         def error_msg(key_name):
             if debug:
                 print(f'{key_name} key not found in json file')
