@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, List, Union
 import psutil
 from psutil import cpu_times
 from psutil import cpu_percent
@@ -44,7 +44,7 @@ class HardwareMonitoring():
         return psutil.cpu_stats()._asdict() if as_dict else psutil.cpu_stats()
 
     @staticmethod
-    def get_virtual_memory(as_dict: bool = True, human_readable: bool = False):
+    def get_virtual_memory(as_dict: bool = True, human_readable: bool = False) -> Union[dict, Any]:
         vm = psutil.virtual_memory()
         if as_dict:
             vm = vm._asdict()

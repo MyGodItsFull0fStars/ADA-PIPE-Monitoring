@@ -5,13 +5,14 @@ from waitress import serve
 from flask_cors import CORS
 from flask_restful import Api
 
-from device_utils import monitored_devices
+from device_utils import device_handler
 from registering_api import RegisteringREST
 
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
+
 
 api.add_resource(RegisteringREST, '/register')
 
@@ -44,9 +45,8 @@ class Monitoring():
 
         # get status of all monitored_devices
         if device is None:
-            return monitored_devices
-        elif device in monitored_devices:
-            return monitored_devices[device]
+            return device_handler.get_all_devices()
+        return device_handler.get_device(device)
 
     # def test(self):
     #     response = requests.get('http://127.0.0.1:5000/device_status')

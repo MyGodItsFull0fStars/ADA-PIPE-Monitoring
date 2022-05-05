@@ -1,7 +1,8 @@
 import json
 import socket
 
-from network_constants import *
+from network_constants import RegisterEnum
+from hardware_monitoring import HardwareMonitoring
 
 class NetworkHandler:
 
@@ -43,12 +44,21 @@ class NetworkHandler:
 
     def get_registering_payload(self, device_name: str = None) -> dict:
         registering_payload: dict = {
-            DEVICE_NAME_JSON_KEY:  device_name if device_name is not None else self.get_hostname(),
-            IP_ADDRESS_JSON_KEY: self.get_ip_address(),
-            PORT_NUMBER_JSON_KEY: self.get_network_port(),
-            PROMETHEUS_JSON_KEY: {
+            RegisterEnum.DEVICE_NAME.value:  device_name if device_name is not None else self.get_hostname(),
+            RegisterEnum.IP_ADDRESS.value: self.get_ip_address(),
+            RegisterEnum.PORT_NUMBER.value: self.get_network_port(),
+            RegisterEnum.HARDWARE_DESCRIPTION.value: {
+                'cpu cores': {
+                    'total': HardwareMonitoring.get_num_total_cpu_cores(),
+                    'physical': HardwareMonitoring.get_num_physical_cpu_cores()
+                },
+                'cpu frequency': HardwareMonitoring.get_cpu_frequency().current,
+                'total memory': HardwareMonitoring.get_virtual_memory(as_dict=False).total,
+                'total storage': '',
+            },
+            RegisterEnum.PROMETHEUS.value: {
                 'namespace': 'monitoring'
-            }
+            },
         }
         return registering_payload
 
