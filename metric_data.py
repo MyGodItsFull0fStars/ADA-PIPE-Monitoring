@@ -10,8 +10,6 @@ REQUEST_TIME_HIST: str = 'response_time_histogram'
 
 metric_data[TOTAL_REQUEST_COUNTER] = Counter(
     'request_operations_total', 'The total number of processed requests')
-metric_data[REQUEST_TIME_HIST] = Histogram(
-    'request_duration', 'Histogram for the duration in seconds', buckets=(0.1, 0.2, 0.5, 0.6, 1, _INF))
 
 
 # HARDWARE STATUS AND INFO
