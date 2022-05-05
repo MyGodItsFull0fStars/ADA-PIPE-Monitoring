@@ -1,15 +1,12 @@
-from matplotlib.style import available
-import prometheus_client
 import threading
-from prometheus_client import Summary, Counter, Histogram, Gauge, Info, CollectorRegistry
-from flask import Response
-from psutil import virtual_memory
+import time
 
-import time, datetime
+import prometheus_client
+from flask import Response
 
 from hardware_monitoring import HardwareMonitoring
+from metric_data import *
 
-from metric_data import *       
 
 class DataCollector():
 
@@ -26,9 +23,9 @@ class DataCollector():
     def get_total_request_counter() -> int:
         return metric_data[TOTAL_REQUEST_COUNTER]
 
-    @staticmethod
-    def add_response_time(response_time):
-        metric_data[REQUEST_TIME_HIST].observe(response_time)
+    # @staticmethod
+    # def add_response_time(response_time):
+    #     metric_data[REQUEST_TIME_HIST].observe(response_time)
 
     @staticmethod
     def update_current_virtual_memory():
@@ -59,7 +56,7 @@ class DataCollectorResponses():
             DataCollector.get_total_request_counter())
         return Response(response, mimetype='text/plain')
 
-class StatusUpdateHandler():
+class StatusUpdateProvider():
 
     @staticmethod
     def update_status():
@@ -69,5 +66,5 @@ class StatusUpdateHandler():
 
     @staticmethod
     def start_background_thread():
-        threading.Timer(0, StatusUpdateHandler.update_status).start()
+        threading.Timer(0, StatusUpdateProvider.update_status).start()
         # print(HardwareMonitoring.get_cpu_load_average(as_dict=True))
