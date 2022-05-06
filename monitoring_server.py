@@ -7,6 +7,7 @@ from flask_restful import Api
 
 from device_utils import device_handler
 from registering_api import RegisteringREST
+from status_retriever import StatusUpdateRetriever
 
 
 app = Flask(__name__)
@@ -55,7 +56,7 @@ class Monitoring():
 
 
 if __name__ == '__main__':
-
+    StatusUpdateRetriever.start_background_thread()
     app.run(port=9100, debug=True)
 
 

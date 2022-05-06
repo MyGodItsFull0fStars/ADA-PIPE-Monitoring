@@ -2,9 +2,9 @@ from flask_restful import Resource
 from flask import jsonify, request, abort, Response
 
 from device_utils import Device, device_handler
-from network_constants import RegisterEnum
+from ADA_PIPE_Monitoring_Base.network_constants import RegisterEnum
 
-from http_status_codes_and_exceptions import HttpResponse
+from ADA_PIPE_Monitoring_Base.http_status_codes_and_exceptions import HttpResponse
 
 class RegisteringREST(Resource):
     """REST API Service that is used to register devices for the monitoring service

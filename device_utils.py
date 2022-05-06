@@ -1,8 +1,8 @@
-from typing import Dict
+from typing import Dict, Union
 from dataclasses import dataclass
 
-from network_constants import RegisterEnum
-import hash_utils
+from ADA_PIPE_Monitoring_Base.network_constants import RegisterEnum
+import ADA_PIPE_Monitoring_Base.hash_utils as hash_utils
 
 
 @dataclass
@@ -24,7 +24,7 @@ class Device():
         return hash_utils.get_hash(hash_utils._json_default(self))
 
     def get_url(self) -> str:
-        return f'{self.ip_address}:{self.port_number}'
+        return f'http://{self.ip_address}:{self.port_number}'
 
     @staticmethod
     def _is_valid(json_file, debug: bool = False) -> bool:
@@ -49,7 +49,7 @@ class MonitorLogging():
 
 
 class DeviceHandler():
-    """This class will be used to retrieve the data from the devices registered in `monitored_devices`
+    """This class will be used to store the registered devices
     """
 
     def __init__(self):
@@ -75,9 +75,20 @@ class DeviceHandler():
             return False
 
     def delete_device(self, device_id: str) -> bool:
+        """Deletes a device from the registered devices
+
+        Args:
+            device_id (str): the id of the device
+
+        Returns:
+            bool: True if successfully removed, else returns False
+        """
         return self.__delete_device(device_id)
 
-    def __delete_device(self, device_id: str) -> bool:
+    def __delete_device(self, device_id: Union[int, str]) -> bool:
+        if device_id is None or len(device_id) == 0:
+            return False
+
         if type(device_id) == int:
             device_id = str(device_id)
 
@@ -87,8 +98,9 @@ class DeviceHandler():
         if not self.is_in_devices(device_id):
             return False
 
-        self._monitored_devices.pop(device_id)
-        return True
+        removed_device = self._monitored_devices.pop(device_id, None)
+        # if None is returned, something went wrong
+        return removed_device is not None
 
     def is_in_devices(self, id: int) -> bool:
         return id in self._monitored_devices
