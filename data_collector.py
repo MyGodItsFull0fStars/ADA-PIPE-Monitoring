@@ -1,13 +1,13 @@
 import threading
 import time
+from functools import wraps
 
 import prometheus_client
 from flask import Response
 
-
 from hardware_monitoring import HardwareMonitoring
 from metric_data import *
-from functools import wraps
+from network_utils import trim_prometheus_message
 
 
 def request_metrics_wrap(func):
@@ -60,15 +60,17 @@ class DataCollector():
 class DataCollectorResponses():
 
     @staticmethod
-    def get_device_status_response() -> Response:
+    def get_device_status_response(trim_description: bool = False) -> Response:
         response = [prometheus_client.generate_latest(
             v) for v in metric_data.values()]
+        response = trim_prometheus_message(response) if trim_description else response
         return Response(response, mimetype='text/plain')
 
     @staticmethod
-    def get_total_number_of_requests() -> Response:
+    def get_total_number_of_requests(trim_description: bool = False) -> Response:
         response = prometheus_client.generate_latest(
             DataCollector.get_total_request_counter())
+        response = trim_prometheus_message(response) if trim_description else response
         return Response(response, mimetype='text/plain')
 
 class StatusUpdateProvider():
