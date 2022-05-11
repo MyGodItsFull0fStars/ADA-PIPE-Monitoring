@@ -9,9 +9,13 @@ from data_collector import (DataCollectorResponses, StatusUpdateProvider,
                             request_metrics_wrap)
 from registering_handler import RegisteringHandler
 
+from network_utils import NetworkHandler
+
+network_handler = NetworkHandler()
+
 DEBUG_MODE: bool = True
 HOST_NUMBER: str = '0.0.0.0'
-PORT_NUMBER: int = 5500
+PORT_NUMBER: int = network_handler.get_network_port()
 
 app = Flask(__name__)
 cors = CORS(app, resources={f'/*': {'origins': '*'}})
@@ -30,7 +34,7 @@ def root():
 @app.route('/device_status')
 @request_metrics_wrap
 def metrics():
-    return DataCollectorResponses.get_device_status_response()
+    return DataCollectorResponses.get_device_status_response(True)
 
 
 @app.route('/hardware_status')
@@ -47,9 +51,9 @@ def test():
 
 if __name__ == '__main__':
 
-    register_handler = RegisteringHandler()
+    # register_handler = RegisteringHandler()
 
-    connected = register_handler.register_resource()
+    # connected = register_handler.register_resource()
 
     status_update_provider = StatusUpdateProvider()
     status_update_provider.start_background_thread()
