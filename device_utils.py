@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from network_constants import RegisterEnum
 import hash_utils
 
+from utils import Singleton
+
 
 @dataclass
 class Device():
@@ -48,7 +50,7 @@ class MonitorLogging():
     pass
 
 
-class DeviceHandler():
+class DeviceHandler(metaclass=Singleton):
     """This class will be used to store the registered devices
     """
 
