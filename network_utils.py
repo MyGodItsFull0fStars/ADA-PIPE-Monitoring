@@ -1,10 +1,22 @@
 import json
 import socket
+from typing import List, Union
 
 from network_constants import RegisterEnum
 from hardware_monitoring import HardwareMonitoring
+from utils import Singleton
 
-class NetworkHandler:
+def trim_prometheus_message(message: Union[str, List[bytes]]) -> str:
+    print(f'\n\n\n{type(message), message}\n\n\n')
+    if type(message) == str:
+        message_list: List[str] = message.split('\n')
+    elif type(message) == list:
+        message = [msg.decode('utf-8') for msg in message]
+        message = '\n'.join(message)
+        message_list: List[str] = message.split('\n')
+    message_list = [msg for msg in message_list if '#' not in msg and len(msg) > 0]
+    return '\n'.join(message_list)
+class NetworkHandler(metaclass=Singleton):
 
     def __init__(self, config_file_path: str = 'config.json', secure_connection: bool = False) -> None:
 
