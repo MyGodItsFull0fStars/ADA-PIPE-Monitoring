@@ -2,20 +2,6 @@ from functools import wraps
 from time import perf_counter
 import enum
 
-from data_collector import DataCollector
-
-
-def request_metrics_wrap(func):
-    @wraps(func)
-    def wrap(*args, **kw):
-        # start_time = perf_counter()
-        result = func(*args, **kw)
-        DataCollector.increment_total_request_counter()
-        # end_time = perf_counter()
-        # DataCollector.add_response_time(end_time - start_time)
-        return result
-    return wrap
-
 class StrEnum(str, enum.Enum):
     """
     StrEnum is a Python `enum.Enum` that inherits from `str`.
@@ -40,3 +26,12 @@ class StrEnum(str, enum.Enum):
 
     def _generate_next_value_(name, *_):
         return name
+
+
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
