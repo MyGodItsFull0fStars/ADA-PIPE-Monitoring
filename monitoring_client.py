@@ -53,6 +53,7 @@ def register_resource(rh: RegisteringHandler, connection_attempts: int = 3, conn
     for t in range(0, connection_attempts + 1):
         if not connected:
             time.sleep(t*connection_delay)
+            print('test')
         else:
             break
         connected = rh.register_resource()
@@ -64,8 +65,7 @@ if __name__ == '__main__':
 
     register_handler = RegisteringHandler()
 
-    while not connected:
-        connected = register_handler.register_resource()
+    connected = register_resource(register_handler)
 
     status_update_provider = StatusUpdateProvider()
     status_update_provider.start_background_thread()
