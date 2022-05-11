@@ -18,17 +18,11 @@ class StatusUpdateRetriever():
         while True:
             all_devices: Dict[int, Device] = device_handler.get_all_devices()
 
-            if len(all_devices.values()) == 0:
-                print(all_devices)
-                print('No devices registered')
-
             for device in all_devices.values():
                 StatusUpdateRetriever._send_monitor_request(device)
 
             time.sleep(5)
             # yield
-
-        
 
     @staticmethod
     def _send_monitor_request(device: Device):
@@ -44,7 +38,6 @@ class StatusUpdateRetriever():
 
         except ConnectionError as err:
             print(err)
-        
 
     @staticmethod
     def start_background_thread():
