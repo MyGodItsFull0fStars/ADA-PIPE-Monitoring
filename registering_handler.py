@@ -1,3 +1,4 @@
+import time
 import requests
 
 from network_utils import NetworkHandler
@@ -13,7 +14,20 @@ class RegisteringHandler:
         self.master_node_register_url: str = self._network_handler.get_master_node_url(
             'register')
 
-    def register_resource(self) -> bool:
+    def register_resource(self, connection_attempts: int = 3, connection_delay: int = 5) -> bool:
+        connected: bool = False
+
+        for t in range(0, connection_attempts + 1):
+            if not connected:
+                time.sleep(t*connection_delay)
+                print('test')
+            else:
+                break
+            connected = self.__register_resource()
+        if not connected:
+            raise ConnectionError('Resource could not be registered')
+
+    def __register_resource(self) -> bool:
         try:
             payload = self._network_handler.get_registering_payload()
             response = requests.post(
@@ -21,7 +35,6 @@ class RegisteringHandler:
             print(response.status_code, response.text)
             return True
         except Exception as err:
-            print(err)
             return False
 
     def update(self):
