@@ -1,10 +1,10 @@
+from flask import Response, abort, request
 from flask_restful import Resource
-from flask import jsonify, request, abort, Response
 
+from http_status_codes_and_exceptions import HttpResponse
+from network_constants import RegisterEnum
 from device_utils import Device, device_handler
-from ADA_PIPE_Monitoring_Base.network_constants import RegisterEnum
 
-from ADA_PIPE_Monitoring_Base.http_status_codes_and_exceptions import HttpResponse
 
 class RegisteringREST(Resource):
     """REST API Service that is used to register devices for the monitoring service
@@ -61,12 +61,11 @@ class RegisteringREST(Resource):
             device = Device(received_json)
             device_id = device.get_device_id()
 
-
             if device_handler.is_in_devices(device_id):
                 return Response('Device not found', 409)
 
             device_handler.add_device(device)
-            
+
             return Response('Updated', 200)
 
         except Exception:

@@ -1,8 +1,8 @@
 from typing import Dict, Union
 from dataclasses import dataclass
 
-from ADA_PIPE_Monitoring_Base.network_constants import RegisterEnum
-import ADA_PIPE_Monitoring_Base.hash_utils as hash_utils
+from network_constants import RegisterEnum
+import hash_utils
 
 
 @dataclass

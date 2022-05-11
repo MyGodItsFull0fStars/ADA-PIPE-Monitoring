@@ -17,6 +17,7 @@ api = Api(app)
 
 api.add_resource(RegisteringREST, '/register')
 
+
 class MessageHelper():
 
     @staticmethod
@@ -39,7 +40,6 @@ class MessageHelper():
         return content_dict
 
 
-
 class Monitoring():
 
     def get_device_status(self, device: str = None):
@@ -58,5 +58,3 @@ class Monitoring():
 if __name__ == '__main__':
     StatusUpdateRetriever.start_background_thread()
     app.run(port=9100, debug=True)
-
-
