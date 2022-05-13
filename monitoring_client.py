@@ -49,15 +49,7 @@ def test():
     return Response(response, mimetype='text/plain')
 
 
-if __name__ == '__main__':
-
-    # register_handler = RegisteringHandler()
-
-    # connected = register_handler.register_resource()
-
-    status_update_provider = StatusUpdateProvider()
-    status_update_provider.start_background_thread()
-
+def start_server():
     if DEBUG_MODE is True:
         # debug mode
         app.run(host=HOST_NUMBER, port=PORT_NUMBER, debug=True)
@@ -67,4 +59,20 @@ if __name__ == '__main__':
         # host_name = socket.gethostname()
         # IP_address = socket.gethostbyname(host_name)
         # print(f'Running on http://{IP_address}:{PORT_NUMBER}/ (Press CTRL+C to quit)')
-        serve(app, port=PORT_NUMBER)
+        serve(app, host=HOST_NUMBER, port=PORT_NUMBER)
+
+if __name__ == '__main__':
+
+    # Connect the resource to the master node
+    register_handler = RegisteringHandler(config_file_path='config_exoscale.json')
+    connected = register_handler.register_resource()
+
+    # Start collecting monitoring data in the background
+    status_update_provider = StatusUpdateProvider()
+    status_update_provider.start_background_thread()
+
+    start_server()
+
+
+
+
