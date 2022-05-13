@@ -6,13 +6,14 @@ from network_utils import NetworkHandler
 
 class RegisteringHandler:
 
-    def __init__(self) -> None:
+    def __init__(self, config_file_path: str = 'config.json') -> None:
 
-        self._network_handler = NetworkHandler()
+        self._network_handler = NetworkHandler(config_file_path)
         self.ip_address: str = self._network_handler.get_ip_address()
         self.port_number: int = self._network_handler.get_network_port()
         self.master_node_register_url: str = self._network_handler.get_master_node_url(
             'register')
+        
 
     def register_resource(self, connection_attempts: int = 3, connection_delay: int = 5) -> bool:
         connected: bool = False
@@ -20,7 +21,6 @@ class RegisteringHandler:
         for t in range(0, connection_attempts + 1):
             if not connected:
                 time.sleep(t*connection_delay)
-                print('test')
             else:
                 break
             connected = self.__register_resource()
@@ -30,6 +30,7 @@ class RegisteringHandler:
     def __register_resource(self) -> bool:
         try:
             payload = self._network_handler.get_registering_payload()
+            print(f'Sending request to {self.master_node_register_url}')
             response = requests.post(
                 url=self.master_node_register_url, json=payload)
             print(response.status_code, response.text)
