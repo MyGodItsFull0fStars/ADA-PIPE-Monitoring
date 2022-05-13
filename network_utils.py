@@ -6,6 +6,8 @@ from network_constants import RegisterEnum
 from hardware_monitoring import HardwareMonitoring
 from utils import Singleton
 
+import urllib.request
+
 def trim_prometheus_message(message: Union[str, List[bytes]]) -> str:
     print(f'\n\n\n{type(message), message}\n\n\n')
     if type(message) == str:
@@ -16,7 +18,7 @@ def trim_prometheus_message(message: Union[str, List[bytes]]) -> str:
         message_list: List[str] = message.split('\n')
     message_list = [msg for msg in message_list if '#' not in msg and len(msg) > 0]
     return '\n'.join(message_list)
-class NetworkHandler(metaclass=Singleton):
+class NetworkHandler():
 
     def __init__(self, config_file_path: str = 'config.json', secure_connection: bool = False) -> None:
 
@@ -83,13 +85,14 @@ class NetworkHandler(metaclass=Singleton):
         network_config: dict = json_file['network']
         self.network_port: int = network_config['port']
         self.hostname: str = socket.gethostname()
-        self.ip_address: str = socket.gethostbyname(self.hostname)
+        try:
+            self.ip_address = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        except Exception:
+            self.ip_address: str = socket.gethostbyname(self.hostname)
+
+
 
 
 if __name__ == '__main__':
     ch = NetworkHandler()
-    # print(ch.master_node)
-    print(ch.get_hostname())
-    print(ch.get_master_node_ip())
-    print(ch.get_network_port())
-    print(ch.get_master_node_url('register'))
+    print(ch.get_ip_address())
