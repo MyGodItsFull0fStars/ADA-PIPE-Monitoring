@@ -86,7 +86,7 @@ class NetworkHandler():
         self.network_port: int = network_config['port']
         self.hostname: str = socket.gethostname()
         try:
-            self.ip_address = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+            self.ip_address = urllib.request.urlopen('https://v4.ident.me').read().decode('utf8')
         except Exception:
             self.ip_address: str = socket.gethostbyname(self.hostname)
 
