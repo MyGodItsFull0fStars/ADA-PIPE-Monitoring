@@ -1,0 +1,19 @@
+version: '1'
+
+services:
+  prometheus:
+    build: .
+    container_name: prometheus
+
+    ports:
+      - 9090:9090
+
+    volumes:
+      - prometheusconfig:/etc/prometheus
+
+  # grafana:
+  #   container_name: grafana
+
+
+volumes:
+  prometheusconfig:

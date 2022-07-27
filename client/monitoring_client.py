@@ -64,8 +64,8 @@ def start_server():
 if __name__ == '__main__':
 
     # Connect the resource to the master node
-    register_handler = RegisteringHandler(config_file_path='config_exoscale.json')
-    connected = register_handler.register_resource()
+    # register_handler = RegisteringHandler(config_file_path='config_exoscale.json')
+    # connected = register_handler.register_resource()
 
     # Start collecting monitoring data in the background
     status_update_provider = StatusUpdateProvider()

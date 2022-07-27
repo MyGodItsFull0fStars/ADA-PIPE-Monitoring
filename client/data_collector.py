@@ -5,7 +5,7 @@ from functools import wraps
 import prometheus_client
 from flask import Response
 
-from hardware_monitoring import HardwareMonitoring
+from client.hardware_monitoring import HardwareMonitoring
 from metric_data import *
 from network_utils import trim_prometheus_message
 
@@ -37,10 +37,6 @@ class DataCollector():
     @staticmethod
     def get_total_request_counter() -> int:
         return metric_data[TOTAL_REQUEST_COUNTER]
-
-    # @staticmethod
-    # def add_response_time(response_time):
-    #     metric_data[REQUEST_TIME_HIST].observe(response_time)
 
     @staticmethod
     def update_current_virtual_memory():

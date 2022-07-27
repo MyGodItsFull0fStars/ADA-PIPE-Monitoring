@@ -1,0 +1,25 @@
+global:
+  # Set the scrape interval to every x seconds. Default is every 1 minute.
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  # Evaluate rules every x seconds/minutes. The default is every minute.
+  evaluation_interval: 1m
+
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'netdata'
+
+    metrics_path: /api/v1/allmetrics
+    params:
+      format: [ prometheus ]
+
+    static_configs:
+      - targets: ['194.182.174.128:9100', '89.145.161.221:9100']

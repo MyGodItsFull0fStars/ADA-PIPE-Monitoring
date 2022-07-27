@@ -3,13 +3,12 @@ import socket
 from typing import List, Union
 
 from network_constants import RegisterEnum
-from hardware_monitoring import HardwareMonitoring
+from client.hardware_monitoring import HardwareMonitoring
 from utils import Singleton
 
 import urllib.request
 
 def trim_prometheus_message(message: Union[str, List[bytes]]) -> str:
-    print(f'\n\n\n{type(message), message}\n\n\n')
     if type(message) == str:
         message_list: List[str] = message.split('\n')
     elif type(message) == list:
